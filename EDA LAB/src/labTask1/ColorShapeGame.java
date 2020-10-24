@@ -26,10 +26,12 @@ public class ColorShapeGame {
 		
 	}
 
+	//In this method we start playing the game
 	private static void playGame(Piece[] pieces) {
 		Stack<Piece> s = new Stack<Piece>();
 	}
 
+	//In this method we are reading the file and creating the array of pieces
 	private static Piece [] createArray(String st) throws IOException {
 		File f = new File (st);
 		Scanner file = new Scanner(f);
@@ -39,16 +41,26 @@ public class ColorShapeGame {
 		Piece pieces[] = new Piece [22];
 		
 		while (file.hasNext()) {
+			//we read the next line of the file
+			//and tokenize the read line individually
 			string = string + file.nextLine();
 			tokens = new StringTokenizer(string,";");
+			
+			//the first token is always the shape of the piece
 			String shape = tokens.nextToken();
-			if (shape.equalsIgnoreCase("square")) {
+			
+			//if the shape is a square, we create a square, being the color the next found token
+			if (shape.equalsIgnoreCase("square")) {	
 				String color = tokens.nextToken();
 				pieces [index] = new Square(shape, color);
 			}
+			//if it is not a square, we create a star
 			else {
 				pieces [index] = new Star(shape);
 			}
+			
+			//and we increase the index for the array and reset the string in order to
+			//read the next line of the file
 			index++;
 			string = "";
 		}
@@ -63,4 +75,3 @@ public class ColorShapeGame {
 	}
 	
 }
-
