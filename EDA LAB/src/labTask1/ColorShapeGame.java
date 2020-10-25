@@ -6,44 +6,42 @@ import java.util.Scanner;
 import java.io.*;
 
 public class ColorShapeGame {
-	public static Scanner input = new Scanner (System.in);
-	
-	public static void main (String args[]) {
-		Piece pieces [] = new Piece [22];
-		boolean exit = false;
+	static final Scanner sc = new Scanner(System.in);
+
+	public static void main(String[] args) {
+		boolean stop= false;
+		//We decide to put the printLine here so as to not repeat this sentence over and over again.
+		System.out.println("Introduce the directory of the file");
 		do {
 			try {
-				String file = filePath();
-				input.close();
-				pieces = createArray(file);
+				String directory = introduceDirectory();
+				Piece [] pieces = readFile(directory);
 				playGame(pieces);
-				exit = true;
-			}catch (IOException e) {
-				System.out.println(e.getMessage());
-				System.out.println("Introduce again the route: ");
+				stop = true;
+			}catch(FileNotFoundException e) {
+				System.out.println("An error has occurred: the file was not located. Introduce the directory again: ");
 			}
-		} while (!exit);
-		
+		}while(!stop);
 	}
 
-	//In this method we start playing the game
-	private static void playGame(Piece[] pieces) {
-		Stack<Piece> s = new Stack<Piece>();
+	
+	public static String introduceDirectory() {
+		String result= sc.nextLine();
+		return result;
 	}
-
-	//In this method we are reading the file and creating the array of pieces
-	private static Piece [] createArray(String st) throws IOException {
-		File f = new File (st);
-		Scanner file = new Scanner(f);
+	
+	public static Piece[] readFile(String directory) throws FileNotFoundException{
 		int index = 0;
 		String string = "";
 		StringTokenizer tokens;
-		Piece pieces[] = new Piece [22];
+		int count = countFile(directory);
+		Piece pieces[] = new Piece [count];
+		Scanner in = new Scanner(new FileReader(directory));
 		
-		while (file.hasNext()) {
+		while (in.hasNext()) {
 			//we read the next line of the file
-			//and tokenize the read line individually
-			string = string + file.nextLine();
+			//and tokenize the each line individually
+			string = string + in.nextLine();
 			tokens = new StringTokenizer(string,";");
 			
 			//the first token is always the shape of the piece
@@ -54,24 +52,38 @@ public class ColorShapeGame {
 				String color = tokens.nextToken();
 				pieces [index] = new Square(shape, color);
 			}
-			//if it is not a square, we create a star
+			//if it is not a square, then we create a star
 			else {
 				pieces [index] = new Star(shape);
 			}
 			
-			//and we increase the index for the array and reset the string in order to
-			//read the next line of the file
+			//we increase the index for the array and reset the string 
+			//in order to read the next line of the file
 			index++;
 			string = "";
 		}
-		file.close();
+		in.close(); //we close the scanner
 		return pieces;
 	}
-
-	private static String filePath() {
-		System.out.println("Where is the file placed?: ");
-		String file = input.nextLine();
-		return file;
+	
+	
+	public static int countFile(String directory) throws FileNotFoundException{
+		
+		//This method is to count the number of pieces that are located in the file.
+		int count = 0;
+		Scanner in = new Scanner(new FileReader(directory));
+		
+		while(in.hasNext()) {
+			count++;
+			in.nextLine();
+		}
+		
+		in.close();
+		return count;
 	}
 	
+	private static void playGame(Piece[] pieces) {
+	//In this method we start playing the game
+		Stack<Piece> s = new Stack<Piece>();
+	}
 }
