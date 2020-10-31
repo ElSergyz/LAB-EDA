@@ -1,8 +1,6 @@
 package labTask1;
 
-import java.util.StringTokenizer;
-import java.util.Stack;
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 
 public class ColorShapeGame {
@@ -34,8 +32,8 @@ public class ColorShapeGame {
 		int index = 0;
 		String string = "";
 		StringTokenizer tokens;
-		int count = countFile(directory);
-		Piece pieces[] = new Piece [count];
+		int nPieces = countPieces(directory);
+		Piece pieces[] = new Piece [nPieces];
 		Scanner in = new Scanner(new FileReader(directory));
 		
 		while (in.hasNext()) {
@@ -66,10 +64,8 @@ public class ColorShapeGame {
 		return pieces;
 	}
 	
-	
-	public static int countFile(String directory) throws FileNotFoundException{
-		
-		//This method is to count the number of pieces that are located in the file.
+	//This method is to count the number of pieces that are located in the file.
+	public static int countPieces(String directory) throws FileNotFoundException{
 		int count = 0;
 		Scanner in = new Scanner(new FileReader(directory));
 		
@@ -83,7 +79,76 @@ public class ColorShapeGame {
 	}
 	
 	private static void playGame(Piece[] pieces) {
-	//In this method we start playing the game
-		Stack<Piece> s = new Stack<Piece>();
+		//In this method we start playing the game
+			int counter = 0, totalPoints = 0;
+			Stack<Piece> s = new Stack<Piece>();
+			
+			for(int i=0; i <pieces.length;i++) {
+				int points = 0; //we are counting the points individually in each iteration
+				if (s.empty() && pieces[i].getShape().equalsIgnoreCase("square")) {
+					s.push(pieces[i]);
+				}
+				
+				else if (pieces[i].getShape().equalsIgnoreCase("star")) {
+					reverseStack(s);
+					points = pieces[i].getPoints();
+					counter++; //increase number of moves
+				}
+				else if (pieces[i].getShape().equalsIgnoreCase("square")){
+					/* We create two auxiliary square objects in order to see if
+					 * they have the same color
+					 */
+					Square var1 = (Square) pieces[i];
+					Square var2 = (Square) s.peek();
+					
+					if(var1.getColor().equalsIgnoreCase(var2.getColor())) {
+						s.pop();
+						points = pieces[i].getPoints() * 2; //double points because they have the same color
+						counter++; //increase number of moves
+					} else {
+						s.push(pieces[i]);
+				
+					}
+				}
+				totalPoints += points;
+			}
+			printStack(s);
+			System.out.println();
+			System.out.println("Points: " + totalPoints);
+			System.out.println("Movements: " + counter);
+	}
+	
+	private static void printStack(Stack<Piece> s) {
+		if(s.empty())
+			return;
+		System.out.println("The final status of the stack is (from bottom to top order): \n");
+		for (int i=0; i<s.size() ; i++) {
+			Piece piece;
+			piece = s.get(i);
+			System.out.println(piece.toString());
+		}
+		
+	}
+
+
+	public static void reverseStack (Stack<Piece> p){
+	    Piece e;
+	    if (!p.empty()) {
+	      e=p.pop();
+	      reverseStack(p);
+	      pushBottom (p,e);
+	    }
+	  }
+	
+	public static void pushBottom (Stack<Piece> p, Piece e){
+	    Piece a;
+	    if (!p.empty()){
+	      a=p.pop();
+	      pushBottom(p,e);
+	      p.push(a);
+	    }
+	    else {
+	      p.push(e);
+	  }
 	}
 }

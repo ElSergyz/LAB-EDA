@@ -1,6 +1,6 @@
 package labTask1;
 
-public class Piece {
+public abstract class Piece {
 
     public String shape;
 	
@@ -11,4 +11,7 @@ public class Piece {
     public String getShape(){
         return shape;
     }
+    
+    public abstract String toString();
+    public abstract int getPoints();
 }
