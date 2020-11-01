@@ -121,11 +121,11 @@ public class ColorShapeGame {
 	private static void printStack(Stack<Piece> s) {
 		if(s.empty())
 			return;
-		System.out.println("The final status of the stack is (from bottom to top order): \n");
+		System.out.println("The final status of the stack is (bottom -> top): \n");
 		for (int i=0; i<s.size() ; i++) {
 			Piece piece;
 			piece = s.get(i);
-			System.out.println(piece.toString());
+			System.out.print(piece.toString() + " | ");
 		}
 		
 	}
